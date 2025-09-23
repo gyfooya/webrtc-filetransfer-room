@@ -17,3 +17,19 @@ A WebRTC-based peer-to-peer file transfer application with automatic connection 
 - Files transfer directly between peers (not through server)
 - Room IDs should be shared securely
 - Use HTTPS/WSS in production
+
+## Configuration
+### Client Configuration
+
+Edit the WebSocket URL in `index.html`:
+```javascript
+const wsUrl = 'ws://localhost:3001'; // Change for production
+```
+
+Edit the Stun server URL in `index.html`:
+```javascript
+iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+```
+use custom Stun server (disable Turn, add IPv6only)
+coturn package is a good starting point
+
