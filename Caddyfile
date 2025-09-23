@@ -1,0 +1,23 @@
+your.domain.xxx {
+    # Serve static files from /srv/http
+    root * /srv/http
+    file_server
+
+    # Handle WebSocket connections to /ws path
+    reverse_proxy /ws localhost:3001
+
+    # Enable gzip compression
+    encode gzip
+
+    # Basic security headers
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        -Server
+    }
+
+    # Log access
+    log {
+        output file /var/log/caddy/access.log
+    }
+}
