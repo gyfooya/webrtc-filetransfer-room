@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>P2P FILE TRANSFER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      color: var(--gray-800);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .card-header i {
+      font-size: 1.5rem;
+      margin-right: 0.75rem;
+      color: var(--primary);
+    }
+
+    .card-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .form-input:disabled {
+      background: var(--gray-100);
+      cursor: not-allowed;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      min-height: 48px;
+    }
+
+    .btn i {
+      margin-right: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background: #d97706;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid-cols-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      .grid-cols-3,
+      .grid-cols-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .card {
+        padding: 1.5rem;
+      }
+    }
+
+    .textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-size: 0.875rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--gray-200);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .file-item {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .file-item:hover {
+      background: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .file-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .file-header i {
+      font-size: 1.25rem;
+      margin-right: 0.75rem;
+    }
+
+    .file-header h4 {
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-top: 0.5rem;
+    }
+
+    .status-badge.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .status-badge.info {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--gray-500);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      font-size: 1.125rem;
+    }
+
+    .connection-status {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 1000;
+    }
+
+    .connection-status.connected {
+      display: flex;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .connection-status i {
+      font-size: 1.25rem;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Connection Status Indicator -->
+  <div id="connectionStatus" class="connection-status">
+    <i class="fas fa-check-circle"></i>
+    <span>Connected & Ready</span>
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1><i class="fas fa-share-alt"></i> WebRTC FILE TRANSFER</h1>
+      <p>Secure peer-to-peer file sharing without hosting server</p>
+    </div>
+
+    <!-- 1. Room Setup -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <i class="fas fa-users"></i>
+        <h2>1. Join Room</h2>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Room ID</label>
+        <div style="display: flex; gap: 1rem;">
+          <input type="text" id="roomId" placeholder="Enter room ID or leave empty to generate one..." class="form-input" style="flex: 1;">
+          <button id="joinRoom" class="btn btn-primary">
+            <i class="fas fa-door-open"></i>Join Room
+          </button>
+          <button id="leaveRoom" class="btn btn-warning" style="display: none;">
+            <i class="fas fa-door-closed"></i>Leave Room
+          </button>
+        </div>
+      </div>
+      <div id="roomStatus" style="display: none; padding: 1rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; margin-top: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary);">
+          <i class="fas fa-users"></i>
+          <span id="roomStatusText">Connected to room</span>
+        </div>
+        <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--gray-600);">
+          <strong>Room ID:</strong> <span id="currentRoomId"></span>
+        </div>
+        <div style="margin-top: 0.25rem; font-size: 0.875rem; color: var(--gray-600);">
+          <strong>Peers in room:</strong> <span id="peerCount">1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Manual Connection (Fallback) -->
+    <div class="card fade-in" id="manualConnection" style="display: none;">
+      <div class="card-header">
+        <i class="fas fa-network-wired"></i>
+        <h2>Manual Connection Setup</h2>
+      </div>
+      <div class="grid grid-cols-3">
+        <button id="createOffer" class="btn btn-primary">
+          <i class="fas fa-paper-plane"></i>Create Offer
+        </button>
+        <button id="createAnswer" class="btn btn-warning">
+          <i class="fas fa-reply"></i>Create Answer
+        </button>
+        <button id="setRemote" class="btn btn-success">
+          <i class="fas fa-link"></i>Connect
+        </button>
+      </div>
+      <div style="margin-top: 1rem; text-align: center;">
+        <small style="color: var(--gray-500);">Use this if automatic room connection fails</small>
+      </div>
+    </div>
+
+    <!-- Show Manual Connection Link -->
+    <div style="text-align: center; margin-bottom: 1rem;">
+      <button id="showManualConnection" class="btn" style="background: var(--gray-200); color: var(--gray-600); padding: 0.5rem 1rem; font-size: 0.875rem;">
+        <i class="fas fa-tools"></i>Manual Connection Setup
+      </button>
+    </div>
+
+    <!-- 3. Session Exchange (Manual Fallback) -->
+    <div class="card fade-in" id="sessionExchange" style="display: none;">
+      <div class="card-header">
+        <i class="fas fa-code"></i>
+        <h2>Session Exchange (Manual)</h2>
+      </div>
+      <div class="grid grid-cols-2">
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <label class="form-label" style="margin-bottom: 0;">Your session data</label>
+          </div>
+          <textarea id="localSDP" placeholder="Your session data will appear here..." class="form-input textarea" readonly></textarea>
+          <button id="copyLocalSDP" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;  margin-top: 0.5rem;" disabled>
+          <i class="fas fa-copy"></i>Copy
+            </button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Peer session data</label>
+          <textarea id="remoteSDP" placeholder="Paste the other person's session data here..." class="form-input textarea"></textarea>
+          <button id="pasteRemoteSDP" class="btn btn-success" style="padding: 0.5rem 1rem; font-size: 0.875rem; margin-top: 0.5rem;">
+            <i class="fas fa-paste"></i>Paste
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Select Files -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <h2>2. Select Files</h2>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Choose files to send</label>
+        <input type="file" id="fileInput" multiple disabled class="form-input">
+      </div>
+      <div id="waitingForConnection" class="empty-state" style="padding: 2rem;">
+        <i class="fas fa-wifi"></i>
+        <p>Join a room first to enable file transfer</p>
+      </div>
+    </div>
+
+    <!-- 3. Transfer Progress -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <i class="fas fa-tasks"></i>
+        <h2>3. Transfer Progress</h2>
+      </div>
+      <div id="progressContainer"></div>
+      <div id="noProgress" class="empty-state">
+        <i class="fas fa-clock"></i>
+        <p>Waiting for transfers...</p>
+      </div>
+    </div>
+
+    <!-- 4. Downloaded Files -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <i class="fas fa-download"></i>
+        <h2>4. Downloaded Files</h2>
+      </div>
+      <div id="download"></div>
+      <div id="noFiles" class="empty-state">
+        <i class="fas fa-folder-open"></i>
+        <p>No files downloaded yet</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let pc, channel;
+    let ws, currentRoom, peerId;
+    let isConnected = false;
+
+    // Generate a unique peer ID
+    function generatePeerId() {
+      return Math.random().toString(36).substr(2, 9);
+    }
+
+    // Generate a random room ID
+    function generateRoomId() {
+      return Math.random().toString(36).substr(2, 8).toUpperCase();
+    }
+
+    // Connect to signaling server
+    function connectToSignalingServer() {
+      // Connect to our dedicated signaling server via WebSocket path
+      const wsUrl = window.location.protocol === 'https:' ?
+        'wss://your.domain.xxx/ws' :
+        'ws://your.domain.xxx/ws';
+
+      console.log('Connecting to WebSocket:', wsUrl);
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        console.log('Connected to signaling server');
+      };
+
+      ws.onmessage = async (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          await handleSignalingMessage(message);
+        } catch (error) {
+          console.error('Error handling signaling message:', error);
+        }
+      };
+
+      ws.onclose = () => {
+        console.log('Disconnected from signaling server');
+        setTimeout(connectToSignalingServer, 5000); // Reconnect after 5 seconds
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+    }
+
+    // Handle signaling messages
+    async function handleSignalingMessage(message) {
+      console.log('Received signaling message:', message.type);
+
+      switch (message.type) {
+        case 'server-info':
+          console.log('Server info:', message.message);
+          break;
+        case 'room-joined':
+          console.log('Successfully joined room:', message.room);
+          updatePeerCount(message.peerCount);
+          if (message.peerCount > 1) {
+            updateRoomStatusText('Peers found - Ready to connect');
+          }
+          break;
+        case 'peer-joined':
+          console.log('Peer joined room:', message.peerId);
+          updatePeerCount(message.peerCount);
+          updateRoomStatusText('Peer found - Connecting...');
+
+          // If we're not connected, initiate connection only if we have a lower peer ID
+          if (!isConnected && peerId < message.peerId) {
+            console.log('Initiating connection with new peer (lower ID)');
+            await initiateConnection(message.peerId);
+          } else if (!isConnected) {
+            console.log('Waiting for peer to initiate connection (higher ID)');
+            updateRoomStatusText('Waiting for peer to connect...');
+          }
+          break;
+        case 'peer-left':
+          console.log('Peer left room:', message.peerId);
+          updatePeerCount(message.peerCount);
+          // Reset connection state when peer leaves
+          if (isConnected) {
+            console.log('Resetting connection due to peer leaving');
+            resetConnection();
+          }
+          if (message.peerCount === 1) {
+            updateRoomStatusText('Waiting for peers...');
+          }
+          break;
+        case 'peer-reconnect-needed':
+          console.log('Peer reconnection needed due to new peer:', message.newPeerId);
+          updatePeerCount(message.peerCount);
+          // Reset existing connection to allow new connection
+          if (isConnected) {
+            console.log('Resetting connection for peer reconnection');
+            resetConnection();
+          }
+          updateRoomStatusText('Peer rejoined - Reconnecting...');
+          break;
+        case 'peers-available':
+          console.log('Available peers:', message.peers);
+          // Connect to the first available peer only if we have a lower peer ID (to avoid dual connections)
+          if (message.peers.length > 0 && !isConnected) {
+            const targetPeer = message.peers[0];
+            if (peerId < targetPeer) {
+              console.log('Initiating connection (lower peer ID)');
+              await initiateConnection(targetPeer);
+            } else {
+              console.log('Waiting for peer to initiate connection (higher peer ID)');
+              updateRoomStatusText('Waiting for peer to connect...');
+            }
+          }
+          break;
+        case 'offer':
+          if (message.targetPeer === peerId || message.targetPeer === 'broadcast') {
+            await handleOffer(message.offer, message.fromPeer);
+          }
+          break;
+        case 'answer':
+          if (message.targetPeer === peerId) {
+            await handleAnswer(message.answer);
+          }
+          break;
+        case 'ice-candidate':
+          if ((message.targetPeer === peerId || message.targetPeer === 'broadcast') && pc) {
+            try {
+              await pc.addIceCandidate(new RTCIceCandidate(message.candidate));
+            } catch (error) {
+              console.error('Error adding ICE candidate:', error);
+            }
+          }
+          break;
+        case 'error':
+          console.error('Server error:', message.error);
+          alert('Server error: ' + message.error);
+          break;
+      }
+    }
+
+    // Send message through signaling server
+    function sendSignalingMessage(message) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ ...message, room: currentRoom, fromPeer: peerId }));
+      }
+    }
+
+    // Join a room
+    async function joinRoom(roomId) {
+      if (!roomId) {
+        roomId = generateRoomId();
+      }
+
+      currentRoom = roomId;
+      peerId = generatePeerId();
+
+      // Connect to signaling server if not connected
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        connectToSignalingServer();
+        // Wait for connection
+        await new Promise(resolve => {
+          const checkConnection = () => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              resolve();
+            } else {
+              setTimeout(checkConnection, 100);
+            }
+          };
+          checkConnection();
+        });
+      }
+
+      // Announce joining the room
+      sendSignalingMessage({
+        type: 'join-room',
+        room: roomId,
+        peerId: peerId,
+        timestamp: Date.now()
+      });
+
+      // Update UI
+      document.getElementById('currentRoomId').textContent = roomId;
+      document.getElementById('roomStatus').style.display = 'block';
+      document.getElementById('joinRoom').style.display = 'none';
+      document.getElementById('leaveRoom').style.display = 'inline-flex';
+      document.getElementById('roomId').disabled = true;
+
+      // Show waiting message
+      updateRoomStatusText('Waiting for peers...');
+    }
+
+    // Leave room
+    function leaveRoom() {
+      if (currentRoom) {
+        sendSignalingMessage({
+          type: 'leave-room',
+          room: currentRoom,
+          peerId: peerId
+        });
+      }
+
+      // Reset connection
+      resetConnection();
+
+      // Close WebSocket
+      if (ws) {
+        ws.close();
+        ws = null;
+      }
+
+      // Reset state
+      currentRoom = null;
+      peerId = null;
+
+      // Update UI
+      document.getElementById('roomStatus').style.display = 'none';
+      document.getElementById('joinRoom').style.display = 'inline-flex';
+      document.getElementById('leaveRoom').style.display = 'none';
+      document.getElementById('roomId').disabled = false;
+    }
+
+    // Update peer count in room
+    function updatePeerCount(count) {
+      document.getElementById('peerCount').textContent = count || 1;
+    }
+
+    // Update room status text
+    function updateRoomStatusText(text) {
+      document.getElementById('roomStatusText').textContent = text;
+    }
+
+    // Reset WebRTC connection
+    function resetConnection() {
+      console.log('Resetting WebRTC connection');
+
+      // Close existing connection
+      if (pc) {
+        pc.close();
+        pc = null;
+      }
+      if (channel) {
+        channel = null;
+      }
+
+      // Reset connection state
+      isConnected = false;
+
+      // Update UI
+      document.getElementById('fileInput').disabled = true;
+      const waitingMsg = document.getElementById('waitingForConnection');
+      if (waitingMsg) waitingMsg.style.display = 'block';
+
+      const connectionStatus = document.getElementById('connectionStatus');
+      connectionStatus.classList.remove('connected');
+    }
+
+    // Initiate connection with another peer
+    async function initiateConnection(targetPeerId) {
+      console.log('Initiating connection with peer:', targetPeerId);
+
+      // Don't initiate if already connected or connecting
+      if (pc && pc.connectionState !== 'closed') {
+        console.log('Already have a connection, skipping');
+        return;
+      }
+
+      await setupConnection(true);
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      console.log('Sending offer to peer:', targetPeerId);
+      sendSignalingMessage({
+        type: 'offer',
+        offer: offer,
+        targetPeer: targetPeerId
+      });
+    }
+
+    // Handle incoming offer
+    async function handleOffer(offer, fromPeerId) {
+      console.log('Received offer from peer:', fromPeerId);
+
+      // Don't handle if we already have a connection
+      if (pc && pc.connectionState !== 'closed') {
+        console.log('Already have a connection, ignoring offer');
+        return;
+      }
+
+      await setupConnection(false);
+
+      await pc.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+
+      console.log('Sending answer to peer:', fromPeerId);
+      sendSignalingMessage({
+        type: 'answer',
+        answer: answer,
+        targetPeer: fromPeerId
+      });
+    }
+
+    // Handle incoming answer
+    async function handleAnswer(answer) {
+      console.log('Received answer from peer');
+      await pc.setRemoteDescription(new RTCSessionDescription(answer));
+    }
+
+    async function setupConnection(isOfferer) {
+      pc = new RTCPeerConnection({
+        // add custom Stun server like coturn (disable turn, add support for ipv6 only...)
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+      });
+
+      pc.onicecandidate = (event) => {
+        if (event.candidate) {
+          // Send ICE candidate through signaling server to all peers in room
+          sendSignalingMessage({
+            type: 'ice-candidate',
+            candidate: event.candidate,
+            targetPeer: 'broadcast'
+          });
+          console.log('Sent ICE candidate');
+        } else {
+          console.log('ICE gathering completed');
+          // For manual fallback mode
+          if (document.getElementById("localSDP")) {
+            document.getElementById("localSDP").value = JSON.stringify(pc.localDescription);
+            document.getElementById("copyLocalSDP").disabled = false;
+          }
+        }
+      };
+
+      // Monitor connection state
+      pc.onconnectionstatechange = () => {
+        console.log('Connection state:', pc.connectionState);
+        if (pc.connectionState === 'connected') {
+          updateRoomStatusText('Connected - Ready to transfer files');
+        } else if (pc.connectionState === 'failed') {
+          updateRoomStatusText('Connection failed - Try again');
+          isConnected = false;
+        }
+      };
+
+      pc.oniceconnectionstatechange = () => {
+        console.log('ICE connection state:', pc.iceConnectionState);
+      };
+
+      pc.ondatachannel = (event) => {
+        channel = event.channel;
+        channel.binaryType = "arraybuffer";
+        setupChannel();
+      };
+
+      if (isOfferer) {
+        channel = pc.createDataChannel("fileTransfer", { ordered: true });
+        channel.binaryType = "arraybuffer";
+        setupChannel();
+      }
+    }
+
+    function setupChannel() {
+      channel.onopen = () => {
+        console.log("DataChannel open, ready to send/receive");
+        isConnected = true;
+
+        // Enable file input
+        document.getElementById("fileInput").disabled = false;
+
+        // Hide waiting message
+        const waitingMsg = document.getElementById("waitingForConnection");
+        if (waitingMsg) waitingMsg.style.display = 'none';
+
+        // Show connection status
+        const connectionStatus = document.getElementById("connectionStatus");
+        connectionStatus.classList.add("connected");
+
+        // Update room status
+        updateRoomStatusText('Connected - Ready to transfer files');
+
+        const noProgress = document.getElementById("noProgress");
+        if (noProgress) {
+          noProgress.innerHTML = '<i class="fas fa-check-circle"></i><p>Ready to transfer files</p>';
+        }
+      };
+
+      channel.onclose = () => {
+        console.log("DataChannel closed");
+        isConnected = false;
+        document.getElementById("fileInput").disabled = true;
+
+        const waitingMsg = document.getElementById("waitingForConnection");
+        if (waitingMsg) waitingMsg.style.display = 'block';
+
+        updateRoomStatusText('Connection lost - Waiting for peers...');
+
+        const connectionStatus = document.getElementById("connectionStatus");
+        connectionStatus.classList.remove("connected");
+      };
+
+      let chunks = [];
+      let total = 0;
+      let expectedSize = 0;
+      let fileName = "";
+      let startTime = 0;
+      let progress, progressText, statusBadge;
+
+      channel.onmessage = (ev) => {
+        if (typeof ev.data === "string") {
+          const meta = JSON.parse(ev.data);
+
+          if (meta.done) {
+            const blob = new Blob(chunks);
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.className = "btn btn-success fade-in";
+            link.style.width = "100%";
+            link.style.marginBottom = "1rem";
+            link.innerHTML = `<i class="fas fa-download"></i>Download ${fileName}`;
+
+            const downloadContainer = document.getElementById("download");
+            downloadContainer.appendChild(link);
+
+            // Hide "no files" message
+            const noFiles = document.getElementById("noFiles");
+            if (noFiles) noFiles.style.display = "none";
+
+            if (progress) {
+              progress.style.width = "100%";
+              if (statusBadge) {
+                statusBadge.className = "status-badge success";
+                statusBadge.innerHTML = '<i class="fas fa-check"></i> Complete';
+              }
+            }
+
+            console.log(`File received: ${fileName}`);
+
+            chunks = [];
+            total = 0;
+            expectedSize = 0;
+            fileName = "";
+            progress = null;
+            progressText = null;
+          } else {
+            // metadata
+            expectedSize = meta.size;
+            fileName = meta.name;
+            startTime = Date.now();
+
+            const container = document.getElementById("progressContainer");
+            const div = document.createElement("div");
+            div.className = "file-item fade-in";
+            div.innerHTML = `
+              <div class="file-header">
+                <i class="fas fa-download" style="color: var(--primary);"></i>
+                <h4>Receiving ${fileName}</h4>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="status-badge info">Starting...</span>
+                <small style="color: var(--gray-500);">0% complete</small>
+              </div>`;
+            container.appendChild(div);
+
+            // Hide "no progress" message
+            const noProgress = document.getElementById("noProgress");
+            if (noProgress && noProgress.style.display !== "none") {
+              noProgress.style.display = "none";
+            }
+
+            progress = div.querySelector(".progress-fill");
+            progressText = div.querySelector("small");
+            statusBadge = div.querySelector(".status-badge");
+          }
+        } else {
+          // binary chunk received
+          chunks.push(ev.data);
+          const chunkSize = ev.data.byteLength ?? 0;
+          total += chunkSize;
+
+          if (expectedSize > 0 && progress) {
+            const percent = ((total / expectedSize) * 100).toFixed(1);
+            const elapsed = (Date.now() - startTime) / 1000;
+            const speed = (total / 1024 / elapsed).toFixed(1);
+            progress.style.width = `${percent}%`;
+            progressText.textContent = `${percent}% complete`;
+            if (statusBadge) {
+              statusBadge.textContent = `${speed} KB/s`;
+            }
+          }
+        }
+      };
+    }
+
+    async function createOffer() {
+      await setupConnection(true);
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+    }
+
+    async function createAnswer() {
+      await setupConnection(false);
+      const offer = JSON.parse(document.getElementById("remoteSDP").value);
+      await pc.setRemoteDescription(offer);
+
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+    }
+
+    async function setRemote() {
+      const remote = JSON.parse(document.getElementById("remoteSDP").value);
+      await pc.setRemoteDescription(remote);
+    }
+
+    document.getElementById("fileInput").onchange = async (e) => {
+      if (!channel) return;
+      const files = Array.from(e.target.files);
+      for (const file of files) {
+        await sendFile(file);
+      }
+    };
+
+    async function sendFile(file) {
+      const reader = file.stream().getReader();
+      let offset = 0;
+
+      channel.send(JSON.stringify({ name: file.name, size: file.size }));
+
+      const container = document.getElementById("progressContainer");
+      const div = document.createElement("div");
+      div.className = "file-item fade-in";
+      div.innerHTML = `
+        <div class="file-header">
+          <i class="fas fa-upload" style="color: var(--success);"></i>
+          <h4>Sending ${file.name}</h4>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%; background: linear-gradient(90deg, var(--success), #34d399);"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="status-badge info">Starting...</span>
+          <small style="color: var(--gray-500);">0% complete</small>
+        </div>`;
+      container.appendChild(div);
+
+      // Hide "no progress" message
+      const noProgress = document.getElementById("noProgress");
+      if (noProgress && noProgress.style.display !== "none") {
+        noProgress.style.display = "none";
+      }
+
+      const progress = div.querySelector(".progress-fill");
+      const progressText = div.querySelector("small");
+      const statusBadge = div.querySelector(".status-badge");
+      const startTime = Date.now();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        while (channel.bufferedAmount > 1e6) {
+          await new Promise(r => channel.onbufferedamountlow = r);
+        }
+
+        channel.send(value);
+        offset += value.byteLength ?? value.length ?? 0;
+
+        const percent = ((offset / file.size) * 100).toFixed(1);
+        const elapsed = (Date.now() - startTime) / 1000;
+        const speed = (offset / 1024 / elapsed).toFixed(1);
+        progress.style.width = `${percent}%`;
+        progressText.textContent = `${percent}% complete`;
+        if (statusBadge) {
+          statusBadge.textContent = `${speed} KB/s`;
+        }
+      }
+
+      channel.send(JSON.stringify({ done: true }));
+      console.log(`File ${file.name} sent.`);
+
+      // Mark as completed
+      progress.style.width = "100%";
+      progressText.textContent = "100% complete";
+      if (statusBadge) {
+        statusBadge.className = "status-badge success";
+        statusBadge.innerHTML = '<i class="fas fa-check"></i> Complete';
+      }
+    }
+
+    // Room management event handlers
+    document.getElementById("joinRoom").onclick = async () => {
+      const roomId = document.getElementById("roomId").value.trim();
+      try {
+        await joinRoom(roomId);
+      } catch (error) {
+        console.error('Error joining room:', error);
+        alert('Failed to join room. Please try again.');
+      }
+    };
+
+    document.getElementById("leaveRoom").onclick = () => {
+      leaveRoom();
+    };
+
+    // Allow pressing Enter in room input to join
+    document.getElementById("roomId").onkeypress = (event) => {
+      if (event.key === 'Enter') {
+        document.getElementById("joinRoom").click();
+      }
+    };
+
+    // Show/hide manual connection
+    document.getElementById("showManualConnection").onclick = () => {
+      const manualConn = document.getElementById("manualConnection");
+      const sessionExchange = document.getElementById("sessionExchange");
+      const isHidden = manualConn.style.display === 'none';
+
+      manualConn.style.display = isHidden ? 'block' : 'none';
+      sessionExchange.style.display = isHidden ? 'block' : 'none';
+
+      const btn = document.getElementById("showManualConnection");
+      btn.innerHTML = isHidden ?
+        '<i class="fas fa-times"></i>Hide Manual Setup' :
+        '<i class="fas fa-tools"></i>Manual Connection Setup';
+    };
+
+    // Manual connection fallback handlers
+    document.getElementById("createOffer").onclick = createOffer;
+    document.getElementById("createAnswer").onclick = createAnswer;
+    document.getElementById("setRemote").onclick = setRemote;
+
+    // Copy button functionality
+    document.getElementById("copyLocalSDP").onclick = async () => {
+      const localSDP = document.getElementById("localSDP").value;
+      if (localSDP) {
+        try {
+          await navigator.clipboard.writeText(localSDP);
+          const button = document.getElementById("copyLocalSDP");
+          const originalText = button.innerHTML;
+          button.innerHTML = '<i class="fas fa-check"></i>Copied!';
+          button.style.background = 'var(--success)';
+          setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.background = 'var(--primary)';
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy: ', err);
+          // Fallback for older browsers
+          document.getElementById("localSDP").select();
+          document.execCommand('copy');
+        }
+      }
+    };
+
+    // Paste button functionality
+    document.getElementById("pasteRemoteSDP").onclick = async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById("remoteSDP").value = text;
+        const button = document.getElementById("pasteRemoteSDP");
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i>Pasted!';
+        button.style.background = '#059669';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.style.background = 'var(--success)';
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to paste: ', err);
+        // Show error feedback
+        const button = document.getElementById("pasteRemoteSDP");
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-exclamation"></i>Paste manually';
+        button.style.background = 'var(--error)';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.style.background = 'var(--success)';
+        }, 3000);
+      }
+    };
+  </script>
+</body>
+</html>
