@@ -1,4 +1,7 @@
 your.domain.xxx {
+    # Bind to IPv6 only 
+    bind ::
+    
     # Serve static files from /srv/http
     root * /srv/http
     file_server
